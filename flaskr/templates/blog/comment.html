@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Comment "{{ post['title'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  
+  <h2>Title</h2>
+  <div>{{ post['title'] }}</div>
+  <h2>Body</h2>
+  <div>{{ post['body'] }}</div>
+  <hr>
+ 
+  <h2>Comments</h2>
+    {% for comment in comments %}
+        {% if comment["post_id"] == post["id"] %}
+          <header>
+            <div class="about">{{ comment['created'].strftime('%Y-%m-%d') }}</div>
+          </header>
+          <p class="body">{{ comment['comment'] }}</p>
+          {% if not loop.last %}
+            <hr>
+          {% endif %}
+          <form action="{{ url_for('blog.delete_cmnt', id=comment['id']) }}" method="post">
+                <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+          </form>
+        {% endif %}
+    {% endfor %}
+    <form method="post">
+            <label for="comment">Comment</label>
+            <textarea name="comment" id="comment">{{ request.form['comment'] }}</textarea>
+            <input type="submit" value="Save">
+    </form>
+{% endblock %}
